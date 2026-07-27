@@ -1,0 +1,73 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: regulamente
+      POSTGRES_PASSWORD: regulamente
+      POSTGRES_DB: regulamente
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U regulamente -d regulamente']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - regulamente_pg:/var/lib/postgresql/data
+
+  migrate:
+    build:
+      context: .
+      target: migrate
+    environment:
+      DATABASE_URL: postgres://regulamente:regulamente@db:5432/regulamente
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ['bun', 'run', 'db:migrate']
+    restart: 'no'
+
+  api:
+    build:
+      context: .
+      target: runtime
+    environment:
+      # Local Compose serves HTTP — default development omits Secure cookies.
+      # Deployments with HTTPS must set NODE_ENV=production explicitly.
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      DATABASE_URL: postgres://regulamente:regulamente@db:5432/regulamente
+      CORS_ORIGINS: http://localhost:5173,http://localhost:5176
+      SESSION_TTL_SECONDS: 28800
+      IDENTITY_SEED_ADMIN_EMAIL: ${IDENTITY_SEED_ADMIN_EMAIL:-}
+      IDENTITY_SEED_ADMIN_PASSWORD: ${IDENTITY_SEED_ADMIN_PASSWORD:-}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID:-}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-}
+      CLOUDFLARE_STREAM_API_BASE: ${CLOUDFLARE_STREAM_API_BASE:-https://api.cloudflare.com/client/v4}
+      CLOUDFLARE_STREAM_TIMEOUT_MS: ${CLOUDFLARE_STREAM_TIMEOUT_MS:-10000}
+      CLOUDFLARE_STREAM_CUSTOMER_CODE: ${CLOUDFLARE_STREAM_CUSTOMER_CODE:-}
+      CLOUDFLARE_STREAM_ALLOWED_ORIGINS: ${CLOUDFLARE_STREAM_ALLOWED_ORIGINS:-}
+      MEDIA_MAX_DURATION_SECONDS: ${MEDIA_MAX_DURATION_SECONDS:-900}
+      MEDIA_UPLOAD_URL_TTL_SECONDS: ${MEDIA_UPLOAD_URL_TTL_SECONDS:-900}
+      MEDIA_PLAYBACK_TOKEN_TTL_SECONDS: ${MEDIA_PLAYBACK_TOKEN_TTL_SECONDS:-900}
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'bun',
+          '-e',
+          "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+
+volumes:
+  regulamente_pg:

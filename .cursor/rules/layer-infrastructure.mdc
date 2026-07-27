@@ -1,0 +1,24 @@
+---
+description: Camada infrastructure — adapters Drizzle/mappers
+globs: src/modules/**/infrastructure/**
+alwaysApply: false
+---
+
+# Layer: infrastructure
+
+Implementa ports do `core`. Conhece Drizzle/Bun SQL/crypto.
+
+## Contém
+
+- `repositories/` — adapters dos ports
+- `mappers/` — Row ↔ Entity
+- `persistence/` — schema Drizzle do módulo
+- CLIs de seed (quando existirem)
+
+## Regras
+
+- Implementa a interface em `core/repositories/` — não inventar API paralela no service.
+- Mapper de infra ≠ DTO da application.
+- Schema/migration por BC; **não** editar migration imutável de outro módulo.
+- Sem regra de negócio (validação de invariante fica na entidade/use-case).
+- Sem Elysia/rotas HTTP aqui.

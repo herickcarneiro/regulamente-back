@@ -1,0 +1,23 @@
+---
+description: Camada core — domínio puro, use-cases e ports
+globs: src/modules/**/core/**
+alwaysApply: false
+---
+
+# Layer: core
+
+TypeScript puro. Se depende de framework, driver, HTTP ou tempo real, está no lugar errado.
+
+## Contém
+
+- `entities/`, `value-objects/`, `errors/`
+- `repositories/` — **só interfaces (ports)**
+- `use-cases/` — uma ação, método `execute`, retorna `Result` / entidade
+
+## Regras
+
+- Use-case acessa **port** de repositório + entidade. Não chama outro use-case.
+- Sem imports de `application`, `infrastructure`, `presentation`, Elysia, Drizzle.
+- Sem `Date.now` / `crypto` soltos — injetar `now` / `newId` nas deps do use-case.
+- Falha de negócio = `Result.fail(DomainError)`, não `throw` de regra.
+- Cross-BC: só id/snapshot; não importar entidade de outro módulo.

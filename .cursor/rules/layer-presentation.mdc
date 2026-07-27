@@ -1,0 +1,22 @@
+---
+description: Camada presentation — Elysia, Zod, cookies
+globs: src/modules/**/presentation/**
+alwaysApply: false
+---
+
+# Layer: presentation
+
+Borda HTTP. Valida input, chama application, mapeia erros → status.
+
+## Contém
+
+- `routes/`, `schemas/` (Zod), `errors/`, plugins (cookie, etc.)
+
+## Regras
+
+- Zod na borda; **strict** quando o contrato exige (campos desconhecidos = `validation`).
+- Chama **service** (ou use-case se não houver service); nunca repositório/Drizzle.
+- Cookie parsing fica aqui (`readSessionCookie`); authZ de negócio via application Identity
+  (`getAuthorizedSession(rawToken, permission)` — sem passar `Request` para application).
+- Não devolver entidade de domínio; só DTO.
+- Sem regra de negócio em handler (só transporte + status).

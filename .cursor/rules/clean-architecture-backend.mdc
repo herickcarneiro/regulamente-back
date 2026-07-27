@@ -1,0 +1,27 @@
+---
+description: Mapa de dependência Clean Arch do regulamente-back (índice)
+alwaysApply: true
+---
+
+# Clean Architecture — índice
+
+Skill: `clean-architecture-backend`. TDD: Red → Green → Refactor por camada
+(`entidade → use-case → service → presentation → infra`).
+
+```text
+presentation → application → core ← infrastructure
+main → composição apenas (DI manual)
+```
+
+Rules por camada (abrir o arquivo da pasta ativa):
+
+| Pasta | Rule |
+|---|---|
+| `**/core/**` | `layer-core.mdc` |
+| `**/application/**` | `layer-application.mdc` |
+| `**/infrastructure/**` | `layer-infrastructure.mdc` |
+| `**/presentation/**` | `layer-presentation.mdc` |
+| `src/main/**` | `layer-main.mdc` |
+
+Módulo: `src/modules/{name}/{core,application,infrastructure,presentation,tests}/`.  
+Não forçar CRUD do `base` quando o agregado tem invariantes próprias.

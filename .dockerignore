@@ -1,0 +1,14 @@
+node_modules
+.git
+.maestri
+.cursor
+coverage
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+dist
+build
+README.md
+docs/tdd-evidence.md

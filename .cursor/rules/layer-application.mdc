@@ -1,0 +1,24 @@
+---
+description: Camada application — services e DTOs (sem repo)
+globs: src/modules/**/application/**
+alwaysApply: false
+---
+
+# Layer: application
+
+Orquestra use-cases e define DTOs. Sem lógica de negócio.
+
+## Contém
+
+- `services/` — orquestração + Entity → DTO
+- `dtos/` — input/output sem comportamento
+- `compose-*.ts` (opcional) — monta use-cases → service para o `main`
+
+## Regras
+
+- Service injeta **use-cases**, não repositórios.
+- **Proibido:** `constructor(... repo: XRepository)` ou chamar `repo.*` no service.
+- Pode abrir transação se cruzar agregados/repos (via port injetado nos UCs).
+- Não importa `presentation` nem driver de banco.
+- Não traduz DomainError → HTTP status (isso é presentation).
+- Se só repassa sem mapear DTO, remova o service.

@@ -1,0 +1,29 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# build
+/dist
+/build
+
+# env
+.env
+.env.local
+.env.*.local
+.maestri/
+
+# misc
+.DS_Store
+*.pem
+*.log
+**/*.trace
+**/*.zip
+**/*.tar.gz
+**/*.tgz
+
+# lockfiles from other package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

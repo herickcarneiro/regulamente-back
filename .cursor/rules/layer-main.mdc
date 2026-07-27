@@ -1,0 +1,22 @@
+---
+description: Composition root e bootstrap HTTP
+globs: src/main/**
+alwaysApply: false
+---
+
+# Layer: main
+
+Único lugar que conhece e conecta todas as camadas.
+
+## Contém
+
+- `composition-root.ts` — DI manual (repo → use-cases → service → app)
+- `create-app.ts` — monta Elysia (CORS, error handler, rotas)
+- `server.ts` / `config/` / `persistence/` (conexão, migrate runner)
+
+## Regras
+
+- Wiring só aqui (ou `application/compose-*.ts` chamado daqui).
+- App **não** auto-migra no boot de produção.
+- Env validado na borda (`loadEnv`); sem secrets hardcoded.
+- Testes usam `createApp` + fakes/compose — sem side effects no import.

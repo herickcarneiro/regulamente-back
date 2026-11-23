@@ -128,6 +128,7 @@ export function composeApp(
       enabled: env.HTTP_LOG_ENABLED,
       color: env.HTTP_LOG_COLOR,
     },
+    apiDocs: { enabled: env.API_DOCS_ENABLED },
   });
 
   return {

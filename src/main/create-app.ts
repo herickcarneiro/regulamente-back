@@ -19,6 +19,7 @@ import {
   type HttpLogPluginConfig,
 } from '../shared/observability/http-log-plugin';
 import { sanitizeValidationError } from './errors/sanitize-validation-error';
+import { createApiDocsPlugin, type ApiDocsConfig } from './openapi/api-docs.plugin';
 
 export type CreateAppDeps = {
   identityService: IdentityService;
@@ -29,6 +30,7 @@ export type CreateAppDeps = {
   secureCookies: boolean;
   corsOrigins: string[];
   httpLog?: HttpLogPluginConfig;
+  apiDocs?: ApiDocsConfig;
 };
 
 export function createApp(deps: CreateAppDeps) {
@@ -78,6 +80,7 @@ export function createApp(deps: CreateAppDeps) {
         message: 'Unexpected error',
       };
     })
+    .use(createApiDocsPlugin(deps.apiDocs ?? { enabled: false }))
     .use(createHealthRoutes())
     .use(
       createIdentityRoutes({

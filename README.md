@@ -53,6 +53,9 @@ Variáveis de seed: ver `.env.example`.
 
 ## Documentação
 
+- **API interativa (Scalar):** `http://localhost:3000/docs` (spec OpenAPI em `/docs/json`).
+  Ligada por padrão fora de `production`; controle com `API_DOCS_ENABLED`.
+  Docs de cada rota ficam em `src/modules/*/presentation/openapi/`.
 - [docs/architecture.md](docs/architecture.md)
 - [docs/api.md](docs/api.md)
 - [docs/identity-contract.md](docs/identity-contract.md)

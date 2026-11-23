@@ -1,6 +1,8 @@
 # API — regulamente-back
 
-Contrato HTTP. OpenAPI será o transporte oficial entre portal e API.
+Contrato HTTP. OpenAPI é o transporte oficial entre portal e API: Scalar em `/docs`,
+spec em `/docs/json` (ver README). Nova rota → documentar em `presentation/openapi/` do módulo;
+o teste `src/main/openapi/api-docs.test.ts` falha se alguma rota ficar sem doc.
 Contratos detalhados: [identity-contract.md](./identity-contract.md), [content-contract.md](./content-contract.md).
 
 ## `GET /health`

@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import type { AssertTrue, Exact } from '../../../../shared/openapi/openapi';
+import type {
+  AdminUserDto,
+  SessionDto,
+} from '../../application/dtos/identity.dto';
 import { ROLES } from '../../core/value-objects/role';
 
 export const loginRequestSchema = z.object({
@@ -30,3 +35,10 @@ export const errorBodySchema = z.object({
   message: z.string(),
   details: z.unknown().optional(),
 });
+
+export type _SessionDtoCheck = AssertTrue<
+  Exact<z.infer<typeof sessionDtoSchema>, SessionDto>
+>;
+export type _AdminUserDtoCheck = AssertTrue<
+  Exact<z.infer<typeof adminUserDtoSchema>, AdminUserDto>
+>;

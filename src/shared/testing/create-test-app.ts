@@ -27,6 +27,7 @@ export type CreateTestAppOptions = {
   now?: () => Date;
   newId?: () => string;
   httpLogEnabled?: boolean;
+  apiDocsEnabled?: boolean;
 };
 
 export function createTestApp(options: CreateTestAppOptions = {}): {
@@ -92,6 +93,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
       enabled: options.httpLogEnabled ?? false,
       color: false,
     },
+    apiDocs: { enabled: options.apiDocsEnabled ?? false },
   });
 
   return {

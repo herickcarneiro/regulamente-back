@@ -50,6 +50,8 @@ const envSchema = z.object({
     .default(900),
   HTTP_LOG_ENABLED: booleanFlag,
   HTTP_LOG_COLOR: booleanFlag,
+  /** Scalar em /docs. Default: ligado fora de produção. */
+  API_DOCS_ENABLED: booleanFlag,
   // R2 foundation (documented; not consumed by Media video runtime v1)
   R2_ACCOUNT_ID: z.string().optional(),
   R2_ACCESS_KEY_ID: z.string().optional(),
@@ -61,9 +63,13 @@ const envSchema = z.object({
 
 type ParsedEnv = z.infer<typeof envSchema>;
 
-export type Env = Omit<ParsedEnv, 'HTTP_LOG_ENABLED' | 'HTTP_LOG_COLOR'> & {
+export type Env = Omit<
+  ParsedEnv,
+  'HTTP_LOG_ENABLED' | 'HTTP_LOG_COLOR' | 'API_DOCS_ENABLED'
+> & {
   HTTP_LOG_ENABLED: boolean;
   HTTP_LOG_COLOR: boolean;
+  API_DOCS_ENABLED: boolean;
 };
 
 export function loadEnv(
@@ -88,6 +94,7 @@ export function loadEnv(
     ...data,
     HTTP_LOG_ENABLED: httpLogEnabled,
     HTTP_LOG_COLOR: httpLogColor,
+    API_DOCS_ENABLED: data.API_DOCS_ENABLED ?? data.NODE_ENV !== 'production',
   };
 }
 

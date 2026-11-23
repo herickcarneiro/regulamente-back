@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import type { AssertTrue, Exact } from '../../../../shared/openapi/openapi';
+import type {
+  ContentDetailDto,
+  ContentListItemDto,
+  ContentListResponseDto,
+} from '../../application/dtos/content.dto';
 import { CONTENT_STATUSES } from '../../core/value-objects/content-status';
 import { CONTENT_TYPES } from '../../core/value-objects/content-type';
 import { EMOTION_CATEGORIES } from '../../core/value-objects/emotion-category';
@@ -38,3 +44,47 @@ export const contentListQuerySchema = z.strictObject({
 export const contentIdParamSchema = z.strictObject({
   id: z.uuid(),
 });
+
+// --- Respostas (documentação OpenAPI; espelham os DTOs da application) ---
+
+export const contentListItemSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  type: contentTypeSchema,
+  category: emotionCategorySchema.nullable(),
+  status: contentStatusSchema,
+  authorName: z.string().describe('Snapshot do nome do autor na criação.'),
+  updatedAt: z.iso.datetime(),
+  version: z
+    .number()
+    .int()
+    .describe('Versão para concorrência otimista (`expectedVersion`).'),
+});
+
+export const contentDetailSchema = contentListItemSchema.extend({
+  description: z.string(),
+  body: z.string(),
+  createdAt: z.iso.datetime(),
+  authorUserId: z.uuid(),
+  mediaAssetId: z
+    .uuid()
+    .nullable()
+    .describe('Media asset de vídeo vinculado (`kind=video`, `status=ready`).'),
+});
+
+export const contentListResponseSchema = z.object({
+  items: z.array(contentListItemSchema),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageSize: z.number().int(),
+});
+
+export type _ContentListItemCheck = AssertTrue<
+  Exact<z.infer<typeof contentListItemSchema>, ContentListItemDto>
+>;
+export type _ContentDetailCheck = AssertTrue<
+  Exact<z.infer<typeof contentDetailSchema>, ContentDetailDto>
+>;
+export type _ContentListResponseCheck = AssertTrue<
+  Exact<z.infer<typeof contentListResponseSchema>, ContentListResponseDto>
+>;
